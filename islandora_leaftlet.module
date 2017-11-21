@@ -13,6 +13,23 @@
  */
 
 /**
+ * Implements hook_theme().
+ *
+ * We supply a pattern so we can overide templates at the theme level if needed.
+ * we can append a pid to a template and the new template file will be called
+ * (the pids colon should be replaced with a dash).
+*/
+function islandora_leaflet_theme($existing, $type, $theme, $path) {
+  return array(
+    'islandora_leaflet_solr_map' => array(
+    'file' => 'theme/theme.inc',
+      'template' => 'theme/islandora-leaflet-solrresult-map',
+      'variables' => array('results' => NULL,'elements'=>NULL),
+    ),
+  );
+}
+
+/**
  * Implements hook_library().
  */
 function islandora_leaflet_library() {
@@ -63,12 +80,11 @@ function islandora_leaflet_library() {
       ),
     ),
   );
-
   return $libraries;
 }
 
 /**
- *
+ * A leaftlet map prebuild alter hook implementation.
  */
 function islandora_leaflet_leaflet_map_prebuild_alter(&$vars = NULL) {
   if (!isset($vars['map']['settings']['maxClusterRadius']) || $vars['map']['settings']['maxClusterRadius'] > 0) {
@@ -79,4 +95,20 @@ function islandora_leaflet_leaflet_map_prebuild_alter(&$vars = NULL) {
     $options = array('type' => 'file', 'weight' => 2);
     drupal_add_js(drupal_get_path('module', 'islandora_leaflet') . '/js/leaflet.markercluster.layercontrol.js', $options);
   }
+}
+
+/**
+ * Implements hook_islandora_solr_primary_display().
+ */
+islandora_leaflet_islandora_solr_primary_display() {
+  return array(
+    'solrleaflet' => array(
+      'name' => t('Results in a Leaflet map'),
+      'module' => 'islandora_leaflet',
+      'file' => 'includes/leaflet_results.inc',
+      'class' => "IslandoraSolrResultsLeaflet",
+      'function' => "displayResults",
+      'description' => t("Display search results in a geographic context, a.k.a a MAP"),
+    ),
+  );
 }
