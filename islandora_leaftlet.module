@@ -112,3 +112,14 @@ islandora_leaflet_islandora_solr_primary_display() {
     ),
   );
 }
+
+/**
+ * Implements hook_islandora_solr_query.
+ */
+function islandora_leaflet_islandora_solr_query($islandora_solr_query) {
+ 
+  if ($islandora_solr_query->display == 'solrleaflet') {
+    dpm($islandora_solr_query);
+    //$islandora_solr_query->solrParams['sort'] = 'fgs.createdDate desc';
+  }
+}
