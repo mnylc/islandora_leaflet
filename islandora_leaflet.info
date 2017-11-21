@@ -1,0 +1,10 @@
+name = "Islandora Leaflet Maps"
+description = "An Islandora Leaflet map module"
+dependencies[] = islandora
+dependencies[] = leaflet
+dependencies[] = leaflet_markercluster
+package = Islandora
+core = 7.x
+version = 7.x-dev
+configure = admin/islandora/leaflet
+stylesheets[all][] = css/islandora_leaflet.theme.css

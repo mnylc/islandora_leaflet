@@ -1,0 +1,82 @@
+<?php
+
+/**
+ * @file
+ * This file part of Islandora Leaflet.
+ *
+ *  (c) 2017. Diego Pino Navarro <dpino@metro.org>
+ *  https://github.com/mnylc/islandora_leaflet.
+ *
+ *  This source file is subject to the GPL V 3.0 license that is bundled
+ *  with this source code and at
+ *  https://github.com/mnylc/islandora_leaflet/blob/master/LICENSE.
+ */
+
+/**
+ * Implements hook_library().
+ */
+function islandora_leaflet_library() {
+
+  $path = drupal_get_path('module', 'islandora_leaflet');
+  $libraries['leaflet_markercluster_layercontrol'] = array(
+    'title' => 'Leaflet Markercluster Layer Control',
+    'version' => 0.1,
+    'js' => array(
+      array(
+        'type' => 'file',
+        'data' => "$path/js/leaflet.markercluster.layercontrol.js",
+        'group' => JS_LIBRARY,
+        'preprocess' => FALSE,
+        'weight' => 2,
+      ),
+    ),
+  );
+  $libraries['leaflet_sidebar'] = array(
+    'title' => 'Leaflet Sidebar',
+    'version' => 1.1,
+    'css' => array(
+      "$path/css/L.Control.Sidebar.css" => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+    ),
+    'js' => array(
+      array(
+        'type' => 'file',
+        'data' => "$path/js/L.Control.Sidebar.js",
+        'group' => JS_LIBRARY,
+        'preprocess' => FALSE,
+        'weight' => 1,
+      ),
+    ),
+  );
+  $libraries['leaflet_fullscreen'] = array(
+    'title' => 'Leaflet Fullscreen Control',
+    'version' => 1.1,
+    'js' => array(
+      array(
+        'type' => 'file',
+        'data' => "$path/js/L.Control.FullScreen.js",
+        'group' => JS_LIBRARY,
+        'preprocess' => FALSE,
+        'weight' => 1.5,
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ *
+ */
+function islandora_leaflet_leaflet_map_prebuild_alter(&$vars = NULL) {
+  if (!isset($vars['map']['settings']['maxClusterRadius']) || $vars['map']['settings']['maxClusterRadius'] > 0) {
+    drupal_add_library('islandora_leaflet', 'leaflet_sidebar');
+    drupal_add_library('islandora_leaflet', 'leaflet_fullscreen');
+    drupal_add_library('islandora_leaflet', 'leaflet_markercluster_layercontrol');
+    // Increase weight so we're included after 'leaflet_markercluster_drupal.js'.
+    $options = array('type' => 'file', 'weight' => 2);
+    drupal_add_js(drupal_get_path('module', 'islandora_leaflet') . '/js/leaflet.markercluster.layercontrol.js', $options);
+  }
+}
