@@ -1,2 +1,2 @@
 # islandora_leaflet
-Islandora and Leaflet Maps meet and the center of the map
+Islandora and Leaflet Maps meet at the center of the map
